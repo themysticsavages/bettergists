@@ -9,4 +9,5 @@ $ git clone https://github.com/themysticsavages/bettergists
 $ cd bettergists
 $ go build index.go
 $ ./index
+YYYY/MM/DD HH:MM:SS Website is up
 ```
