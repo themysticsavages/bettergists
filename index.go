@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-  "net/url"
+  	"net/url"
 	"strings"
 )
 
@@ -65,7 +65,7 @@ func main() {
       fmt.Println(de, tmp)
 			resp += strings.ReplaceAll(
 				"<img src='"+tmp+"' height='25' width='25'>&nbsp;"+
-        "<a href='https://sulphurous.cf/gists/"+
+        				"<a href='https://sulphurous.cf/gists/"+
 					string(*v[i]["id"])+
 					"' target='blank'>"+
 					string(*v[i]["title"])+
