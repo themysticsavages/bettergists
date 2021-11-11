@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+  "net/url"
 	"strings"
 )
 
@@ -50,13 +51,21 @@ func main() {
 
 		arr := string(*objmap["gists"])
 		v := arrayparse(arr)
+    fmt.Println(v)
 
 		var resp string
 		resp = ""
 
 		for i := range v {
+      de, err := url.QueryUnescape(string(*v[i]["user"]))
+      check(err)
+      user := strings.ReplaceAll(de, `"`, "")
+
+      tmp := string(*parse(string(*parse(string(*parse(request("https://api.scratch.mit.edu/users/"+user))["profile"]))["images"]))["55x55"])
+      fmt.Println(de, tmp)
 			resp += strings.ReplaceAll(
-				"<a href='https://sulphurous.cf/gists/"+
+				"<img src='"+tmp+"' height='25' width='25'>&nbsp;"+
+        "<a href='https://sulphurous.cf/gists/"+
 					string(*v[i]["id"])+
 					"' target='blank'>"+
 					string(*v[i]["title"])+
@@ -74,3 +83,4 @@ func main() {
 	log.Println("Website is up")
 	log.Fatal(http.ListenAndServe(":8081", nil))
 }
+
