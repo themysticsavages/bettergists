@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+  <!-- Gradients are nice -->
+  <head style="height: 100%; overflow-y: auto;">
+    <link rel='shortcut' href='https://raw.githubusercontent.com/ajskateboarder/stuff/main/more/logo.png'>
+    <title>bettergists</title>
+    <style type='text/css'>
+      .bg {
+      background: linear-gradient(218deg, black, white);
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: cover;
+      -webkit-animation: animation 8s ease infinite;
+      -moz-animation: animation 8s ease infinite;
+      animation: animation 8s ease infinite;
+      }
+      @-webkit-keyframes animation {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+      }
+      @-moz-keyframes animation {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+      }
+      @keyframes animation {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+      }
+      body { 
+      font-family: 'Arial';
+      color: white;
+      width: 400px;
+      margin: 60px auto 30px auto; width: 500px;
+      }
+      h1, h2 {
+      font-weight: lighter;
+      margin: 0;
+      }
+      .desc {
+      font-size: 20px;
+      }
+      hr {
+      border: 1px solid rgb(255, 253, 208, 0.5);
+      width: 20%;
+      }
+      a {
+      color: white;
+      text-decoration: none;
+      }
+      a:hover {
+      background-color: rgb(192,192,192,0.3)
+      }
+      img {
+      vertical-align: middle;
+      max-width: 100%; max-height: 100%;
+      }
+      .search-box-container input {
+      margin-left: 20px;
+      border-radius: 5px 5px 5px 5px;
+      padding: 5px 20px 5px 5px;
+      transition: width .45s ease-in-out;
+      width: 50px;
+      }
+      .loading {
+      animation: rotation 3s infinite linear;
+      margin-left: 20px;
+      position: fixed;
+      opacity: 0.3;
+      }
+      @keyframes rotation {
+      from {
+      transform: rotate(0deg);
+      }
+      to {
+      transform: rotate(359deg);
+      }
+      }
+      .search-box-container:after {
+      content: '\f002';
+      color: white;
+      font-family: FontAwesome;
+      margin-left: -25px;
+      margin-right: 25px;
+      }
+      .search-box-container input:focus {
+      width: 200px;
+      }
+      .search-box {
+      background-color: transparent; 
+      border: 1px solid rgb(255, 253, 208, 0.5); 
+      outline: none;
+      color: white;
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' rel='stylesheet'/>
+  </head>
+  <body class="bg" style="vertical-align: center;">
+    <div style='margin: 20px;' class='header-info'>
+      <h1>bettergists <h1 class='desc'>A Sulphurous gist viewer</h1></h1>
+    </div>
+    <hr>
+    <div style='margin-left: 20px;' class='actual-info'>
+      <h2>The latest</h2> <br>
+      %info <br>
+    </div>
+    <div style='margin-left: 20px' class='search-by-user'>
+      <h2>Search gists</h2>
+    </div>
+    <br>
+    <div class='search-box-container'>
+      <input type='text' autocomplete='off' placeholder='|' id='search-gists' class='search-box'> 
+    </div>
+    <br>
+	  <p id="status" style="margin-left: 20px;"></p>
+    <div style="margin-left: 20px;" class="results" id="results" hidden>
+    </div>
+    <img src="%ldimg" class="loading" height="55" hidden>
+  </body>
+  <script type='text/javascript'>
+		var s = document.getElementById('search-gists');
+		s.addEventListener('keydown', function (e) {
+			if (e.keyCode === 13) {
+				document.getElementsByClassName('loading')[0].hidden = false
+        document.getElementById('results').hidden = true
+        document.getElementById('results').innerHTML = ''
+        document.getElementById('status').innnerText = ''
+        ani()
+			}
+		});
+  </script>
+  <script>
+    function ani() {
+	  var sr = document.getElementById('search-gists')
+	  var sbyu = []
+
+      fetch('https://sulphurous.cf/api/gists/all/')
+		  .then(r=>r.json()).then(r=>
+		  {
+			r['gists'].forEach(g => {
+				if (g['user'] === sr.value || g['title'] === sr.value || g['id'].toString() === sr.value)
+					sbyu.push(g)
+			})
+			if (sbyu.length === 0) 
+      		{
+				document.getElementById('status').innerText = 'No results. None at all.'
+        		document.getElementsByClassName('loading')[0].hidden = true
+      		} else 
+      		{
+        		sbyu.forEach(sg => {
+					fetch(`https://scratchapinc.herokuapp.com/users/${sg['user']}/`)
+					.then(r=>r.json()).then(r=>
+					{
+          				document.getElementById('results').innerHTML += `<img src='${r['profile']['images']['55x55']}' height='25' width='25'> <a href='https://sulphurous.cf/gists/${sg['id']}' target='blank'>${sg['title']} by ${sg['user']}</a> <br>`
+					})
+        		})
+            document.getElementById('status').innerText = 'Found something.'
+        		document.getElementsByClassName('loading')[0].hidden = true
+            document.getElementById('results').hidden = false
+      		}
+	})
+    }
+  </script>
+</html>
