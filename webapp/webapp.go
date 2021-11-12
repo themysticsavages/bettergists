@@ -16,7 +16,6 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 
         arr := string( * objmap["gists"])
     v := util.ArrayParse(arr)
-    fmt.Println(v)
 
     var resp string
     resp = ""
@@ -27,7 +26,6 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
         user := strings.ReplaceAll(de, `"`, "")
 
         tmp := string(*util.Parse(string(*util.Parse(string(*util.Parse(util.Request("https://api.scratch.mit.edu/users/" + user))["profile"]))["images"]))["55x55"])
-        fmt.Println(de, tmp)
         resp += strings.ReplaceAll(
         "<img src='" + tmp + "' height='25' width='25'>&nbsp;" +
           "<a href='https://sulphurous.cf/gists/" +
@@ -41,8 +39,23 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
     }
     that,
     err := ioutil.ReadFile("webapp/static/index.html")
+    this,
+    errno := ioutil.ReadFile("webapp/static/styles.css")
+
     util.Check(err)
+    util.Check(errno)
+
+    fresp := strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(string(that), "%info", resp), "%ldimg", util.Base64FromFile("webapp/static/loading.png")), "%css", string(this))
 		fmt.Fprintf(
-			w, strings.ReplaceAll(strings.ReplaceAll(string(that), "%info", resp), "%ldimg", util.Base64FromFile("webapp/static/loading.png")),
+			w, fresp,
 		)
+}
+
+func JavaScriptHandler(w http.ResponseWriter, r *http.Request) {
+  that,
+  err := ioutil.ReadFile("webapp/static/script.js")
+  util.Check(err)
+  fmt.Fprintf(
+    w, string(that),
+  )
 }
