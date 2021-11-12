@@ -9,8 +9,8 @@ $ git clone https://github.com/themysticsavages/bettergists
 $ cd bettergists
 $ # set the go111module variable to auto
 $ go env -w GO111MODULE=auto
-$ go build index.go
-$ ./index
+$ go build .
+$ ./bettergists
 YYYY/MM/DD HH:MM:SS Website is up
 ```
 
